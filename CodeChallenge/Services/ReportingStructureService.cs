@@ -22,8 +22,8 @@ namespace CodeChallenge.Services
 
       return new ReportingStructure
       {
-        employee = employee,
-        numberOfReports = directReports
+        Employee = employee,
+        NumberOfReports = directReports
       };
     }
 

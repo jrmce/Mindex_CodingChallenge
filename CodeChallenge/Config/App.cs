@@ -11,49 +11,50 @@ using Microsoft.Extensions.Hosting;
 
 namespace CodeChallenge.Config
 {
-    public class App
+  public class App
+  {
+    public WebApplication Configure(string[] args)
     {
-        public WebApplication Configure(string[] args)
-        {
-            args ??= Array.Empty<string>();
+      args ??= Array.Empty<string>();
 
-            var builder = WebApplication.CreateBuilder(args);
+      var builder = WebApplication.CreateBuilder(args);
 
-            builder.UseEmployeeDB();
-            
-            AddServices(builder.Services);
+      builder.UseEmployeeDB();
 
-            var app = builder.Build();
+      AddServices(builder.Services);
 
-            var env = builder.Environment;
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                SeedEmployeeDB();
-            }
+      var app = builder.Build();
 
-            app.UseAuthorization();
+      var env = builder.Environment;
+      if (env.IsDevelopment())
+      {
+        app.UseDeveloperExceptionPage();
+        SeedEmployeeDB();
+      }
 
-            app.MapControllers();
+      app.UseAuthorization();
 
-            return app;
-        }
+      app.MapControllers();
 
-        private void AddServices(IServiceCollection services)
-        {
-
-            services.AddScoped<IEmployeeService, EmployeeService>();
-            services.AddScoped<IEmployeeRepository, EmployeeRespository>();
-
-            services.AddControllers();
-        }
-
-        private void SeedEmployeeDB()
-        {
-            new EmployeeDataSeeder(
-                new EmployeeContext(
-                    new DbContextOptionsBuilder<EmployeeContext>().UseInMemoryDatabase("EmployeeDB").Options
-            )).Seed().Wait();
-        }
+      return app;
     }
+
+    private void AddServices(IServiceCollection services)
+    {
+
+      services.AddScoped<IEmployeeService, EmployeeService>();
+      services.AddScoped<IReportingStructureService, ReportingStructureService>();
+      services.AddScoped<IEmployeeRepository, EmployeeRespository>();
+
+      services.AddControllers();
+    }
+
+    private void SeedEmployeeDB()
+    {
+      new EmployeeDataSeeder(
+          new EmployeeContext(
+              new DbContextOptionsBuilder<EmployeeContext>().UseInMemoryDatabase("EmployeeDB").Options
+      )).Seed().Wait();
+    }
+  }
 }
